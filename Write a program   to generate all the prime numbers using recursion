@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+bool isPrime(int num, int divisor) {
+    // Base cases
+    if (num <= 1) {
+        return false; // 0 and 1 are not prime numbers
+    }
+    if (divisor == 1) {
+        return true; // 2 is prime
+    }
+    
+    if (num % divisor == 0) {
+        return false;
+    }
+    return isPrime(num, divisor - 1);
+}
+void printPrimes(int n) {
+    if (n >= 2) {
+        printPrimes(n - 1); 
+        if (isPrime(n, n/2)) {
+            printf("%d ", n); 
+        }
+    }
+}
+
+int main() {
+    int limit;
+    printf("Enter the upper limit for prime numbers: ");
+    scanf("%d", &limit);
+
+    printf("Prime numbers up to %d are: ", limit);
+    printPrimes(limit);
+    printf("\n");
+
+    return 0;
+}
+#include <stdio.h>
+#include <stdbool.h>
+bool isPrime(int num, int divisor) {
+  
+    if (num <= 1) {
+        return false; 
+    }
+    if (divisor == 1) {
+        return true; 
+    }
+    
+    
+    if (num % divisor == 0) {
+        return false;
+    }
+    
+    
+    return isPrime(num, divisor - 1);
+}
+
+void printPrimes(int n) {
+    if (n >= 2) {
+        printPrimes(n - 1); 
+        if (isPrime(n, n/2)) {
+            printf("%d ", n); 
+        }
+    }
+}
+
+int main() {
+    int limit;
+    
+    printf("Enter the upper limit for prime numbers: ");
+    scanf("%d", &limit);
+
+    printf("Prime numbers up to %d are: ", limit);
+    printPrimes(limit);
+    printf("\n");
+
+    return 0;
+}
