@@ -1,0 +1,20 @@
+#include <stdio.h>
+void reverseString(char *str) {
+    if (*str == '\0') {
+        return; // Base case: end of string
+    }
+    reverseString(str + 1); // Recursive call with the next character
+    putchar(*str); // Print the current character after the recursive call
+}
+
+int main() {
+    char str[100];
+    printf("Enter a string: ");
+    gets(str); // Read a string from input
+
+    printf("Reversed string: ");
+    reverseString(str);
+    printf("\n");
+
+    return 0;
+}
