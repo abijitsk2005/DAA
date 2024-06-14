@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct HashSetNode {
+    int key;
+    struct HashSetNode *next;
+} HashSetNode;
+
+typedef struct HashSet {
+    int size;
+    HashSetNode **buckets;
+} HashSet;
+HashSetNode *createHashSetNode(int key) {
+    HashSetNode *node = (HashSetNode *)malloc(sizeof(HashSetNode));
+    node->key = key;
+    node->next = NULL;
+    return node;
+}
+
+HashSet *createHashSet(int size) {
+    HashSet *set = (HashSet *)malloc(sizeof(HashSet));
+    set->size = size;
+    set->buckets = (HashSetNode **)malloc(size * sizeof(HashSetNode *));
+    for (int i = 0; i < size; i++) {
+        set->buckets[i] = NULL;
+    }
+    return set;
+}
+int hash(int key, int size) {
+    return abs(key) % size;
+}
+void insertIntoHashSet(HashSet *set, int key) {
+    int index = hash(key, set->size);
+    HashSetNode *node = set->buckets[index];
+    
+    while (node != NULL) {
+        if (node->key == key) {
+            return; // Key already exists
+        }
+        node = node->next;
+    }
+   
+    HashSetNode *newNode = createHashSetNode(key);
+    newNode->next = set->buckets[index];
+    set->buckets[index] = newNode;
+}
+
+
+int existsInHashSet(HashSet *set, int key) {
+    int index = hash(key, set->size);
+    HashSetNode *node = set->buckets[index];
+    while (node != NULL) {
+        if (node->key == key) {
+            return 1; // Key exists
+        }
+        node = node->next;
+    }
+    return 0;
+}
+
+void freeHashSet(HashSet *set) {
+    for (int i = 0; i < set->size; i++) {
+        HashSetNode *node = set->buckets[i];
+        while (node != NULL) {
+            HashSetNode *temp = node;
+            node = node->next;
+            free(temp);
+        }
+    }
+    free(set->buckets);
+    free(set);
+}
+
+int *intersection(int *nums1, int nums1Size, int *nums2, int nums2Size, int *returnSize) {
+  
+    HashSet *set1 = createHashSet(nums1Size);
+    for (int i = 0; i < nums1Size; i++) {
+        insertIntoHashSet(set1, nums1[i]);
+    }
+    
+    HashSet *result_set = createHashSet(nums2Size);
+    for (int i = 0; i < nums2Size; i++) {
+        if (existsInHashSet(set1, nums2[i])) {
+            insertIntoHashSet(result_set, nums2[i]);
+        }
+    }
+    *returnSize = 0;
+    for (int i = 0; i < result_set->size; i++) {
+        HashSetNode *node = result_set->buckets[i];
+        while (node != NULL) {
+            (*returnSize)++;
+            node = node->next;
+        }
+    }
+    int *result = (int *)malloc((*returnSize) * sizeof(int));
+    int index = 0;
+    for (int i = 0; i < result_set->size; i++) {
+        HashSetNode *node = result_set->buckets[i];
+        while (node != NULL) {
+            result[index++] = node->key;
+            node = node->next;
+        }
+    }
+    freeHashSet(set1);
+    freeHashSet(result_set);
+    
+    return result;
+}
+void printArray(int *arr, int size) {
+    printf("[");
+    for (int i = 0; i < size; i++) {
+        printf("%d", arr[i]);
+        if (i < size - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main() {
+  
+    int nums1[] = {1, 2, 2, 1};
+    int nums1Size = 4;
+    int nums2[] = {2, 2};
+    int nums2Size = 2;
+
+    int returnSize;
+    int *result = intersection(nums1, nums1Size, nums2, nums2Size, &returnSize);
+
+    printf("Intersection: ");
+    printArray(result, returnSize);
+
+    free(result);
+
+    return 0;
+}
