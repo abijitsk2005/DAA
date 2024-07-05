@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <limits.h>
+int sum(int freq[], int i, int j) {
+    int s = 0;
+    for (int k = i; k <= j; k++) {
+        s += freq[k];
+    }
+    return s;
+}
+int optimalBST(int keys[], int freq[], int n) {
+    int cost[n][n];
+    for (int i = 0; i < n; i++) {
+        cost[i][i] = freq[i];
+    }
+    for (int L = 2; L <= n; L++) {
+        for (int i = 0; i <= n - L; i++) {
+            int j = i + L - 1;
+            cost[i][j] = INT_MAX;
+
+            for (int r = i; r <= j; r++) {
+                int c = ((r > i) ? cost[i][r - 1] : 0) +
+                        ((r < j) ? cost[r + 1][j] : 0) +
+                        sum(freq, i, j);
+                if (c < cost[i][j]) {
+                    cost[i][j] = c;
+                }
+            }
+        }
+    }
+    return cost[0][n - 1];
+}
+int main() {
+    int keys[] = {10, 12, 20};
+    int freq[] = {34, 8, 50};
+    int n = sizeof(keys) / sizeof(keys[0]);
+    printf("Cost of Optimal BST is %d\n", optimalBST(keys, freq, n));
+    return 0;
+}
+Output:
+Cost of Optimal BST is 142
+
+22. Using Dynamic programming techniques to find binomial coefficient of a given number
+#include <stdio.h>
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+int binomialCoeff(int n, int k) {
+    int C[n + 1][k + 1];
+    int i, j;
+    for (i = 0; i <= n; i++) {
+        for (j = 0; j <= min(i, k); j++) {
+            if (j == 0 || j == i)
+                C[i][j] = 1;
+            else
+                C[i][j] = C[i - 1][j - 1] + C[i - 1][j];
+        }
+    }
+    return C[n][k];
+}
+int main() {
+    int n = 5, k = 2;
+    printf("The binomial coefficient C(%d, %d) is %d\n", n, k, binomialCoeff(n, k));
+    return 0;
+}
